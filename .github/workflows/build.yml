@@ -1,0 +1,54 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate placeholder assets
+        run: |
+          python3 -m pip install Pillow
+          mkdir -p assets
+          cat > /tmp/gen.py << 'PYEOF'
+          from PIL import Image, ImageDraw
+          def make(path, size, text):
+              img = Image.new('RGB', size, '#FF5A5F')
+              d = ImageDraw.Draw(img)
+              d.text((size[0]//2, size[1]//2), text, fill='white', anchor='mm')
+              img.save(path)
+          make('assets/icon.png', (1024,1024), 'FitPlan')
+          make('assets/adaptive-icon.png', (1024,1024), 'FitPlan')
+          make('assets/splash.png', (1284,2778), 'FitPlan AI')
+          make('assets/favicon.png', (48,48), 'F')
+          PYEOF
+          python3 /tmp/gen.py
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Prebuild Android
+        run: npx expo prebuild --platform android --clean
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Build APK
+        run: cd android && ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: fitplan-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
