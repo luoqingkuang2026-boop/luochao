@@ -270,16 +270,14 @@ function Onboarding({ onDone }) {
             <Text style={S.label}>性别</Text>
             <View style={S.row}>
               <Chip label="女" active={gender === 'female'} onPress={() => setGender('female')} />
-]}
               <Chip label="男" active={gender === 'male'} onPress={() => setGender('male')} />
             </View>
             <Text style={S.label}>年龄</Text>
             <TextInput style={S.input} keyboardType="number-pad" value={age} onChangeText={setAge} />
             <Text style={S.label}>身高 (cm)</Text>
-            <TextInput style={S.input} keyboardType="number-pad" value={height         Cm} onChangeText={setHeightCm >
-} />
-            <           Text style={S.label}>体重 < (kg)</Text>
-           View <TextInput style={S.input style} keyboardType="decimal-pad" value={weightKg} onChangeText={setWeightKg} />
+            <TextInput style={S.input} keyboardType="number-pad" value={heightCm} onChangeText={setHeightCm} />
+            <Text style={S.label}>体重 (kg)</Text>
+            <TextInput style={S.input} keyboardType="decimal-pad" value={weightKg} onChangeText={setWeightKg} />
             <Text style={S.label}>日常活动量</Text>
             {[['sedentary', '久坐'], ['light', '轻度（每周1-3次）'], ['moderate', '中度（每周3-5次）'], ['active', '高度（每周6-7次）']].map(([k, l]) => (
               <Chip key={k} label={l} active={activityLevel === k} onPress={() => setActivityLevel(k)} />
@@ -460,7 +458,8 @@ function PlanTab({ plan, onOpen }) {
           <TouchableOpacity
             key={label}
             onPress={() => onOpen(day.id)}
-            style={[S.dayCard, isToday && { borderWidth: 2, borderColor: '#FF5A5F' }={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            style={[S.dayCard, isToday && { borderWidth: 2, borderColor: '#FF5A5F' }]}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ color: isToday ? '#FF5A5F' : '#7A7F87', fontSize: 13, fontWeight: '700' }}>
                 {label} {isToday ? '· 今天' : ''}
               </Text>
